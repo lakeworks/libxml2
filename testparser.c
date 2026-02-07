@@ -777,6 +777,68 @@ testWindowsUri(void) {
 }
 #endif /* WIN32 */
 
+static int
+testRemoveParamEntityIntSubset(void) {
+    xmlDocPtr doc;
+    xmlEntityPtr ent;
+    int err = 0;
+
+    doc = xmlNewDoc(BAD_CAST "1.0");
+    xmlCreateIntSubset(doc, BAD_CAST "doc", NULL, NULL);
+
+    xmlAddDocEntity(doc, BAD_CAST "param1", XML_INTERNAL_PARAMETER_ENTITY,
+                    NULL, NULL, BAD_CAST "value");
+    ent = xmlGetParameterEntity(doc, BAD_CAST "param1");
+    if (ent == NULL) {
+        fprintf(stderr, "testRemoveParamEntityIntSubset: "
+                "entity not found after add\n");
+        xmlFreeDoc(doc);
+        return 1;
+    }
+    xmlUnlinkNode((xmlNodePtr) ent);
+    if (xmlGetParameterEntity(doc, BAD_CAST "param1") != NULL) {
+        fprintf(stderr, "testRemoveParamEntityIntSubset: "
+                "parameter entity still in pentities after unlink\n");
+        err = 1;
+    } else {
+        xmlFreeNode((xmlNodePtr) ent);
+    }
+    xmlFreeDoc(doc);
+
+    return err;
+}
+
+static int
+testRemoveParamEntityExtSubset(void) {
+    xmlDocPtr doc;
+    xmlEntityPtr ent;
+    int err = 0;
+
+    doc = xmlNewDoc(BAD_CAST "1.0");
+    xmlNewDtd(doc, BAD_CAST "doc", NULL, BAD_CAST "doc.dtd");
+
+    xmlAddDtdEntity(doc, BAD_CAST "param2", XML_EXTERNAL_PARAMETER_ENTITY,
+                    NULL, NULL, BAD_CAST "value");
+    ent = xmlGetParameterEntity(doc, BAD_CAST "param2");
+    if (ent == NULL) {
+        fprintf(stderr, "testRemoveParamEntityExtSubset: "
+                "entity not found after add\n");
+        xmlFreeDoc(doc);
+        return 1;
+    }
+    xmlUnlinkNode((xmlNodePtr) ent);
+    if (xmlGetParameterEntity(doc, BAD_CAST "param2") != NULL) {
+        fprintf(stderr, "testRemoveParamEntityExtSubset: "
+                "parameter entity still in pentities after unlink\n");
+        err = 1;
+    } else {
+        xmlFreeNode((xmlNodePtr) ent);
+    }
+    xmlFreeDoc(doc);
+
+    return err;
+}
+
 int
 main(void) {
     int err = 0;
@@ -815,6 +877,8 @@ main(void) {
 #if defined(_WIN32) || defined(__CYGWIN__)
     err |= testWindowsUri();
 #endif
+    err |= testRemoveParamEntityIntSubset();
+    err |= testRemoveParamEntityExtSubset();
 
     return err;
 }
