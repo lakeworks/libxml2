@@ -2507,10 +2507,19 @@ xmlParseSGMLCatalog(xmlCatalogPtr catal, const xmlChar *value,
 		    }
 		} else {
 		    xmlChar *filename;
+		    xmlCatalogEntryPtr entry;
 
 		    filename = xmlBuildURI(sysid, base);
 		    if (filename != NULL) {
-			xmlExpandCatalog(catal, (const char *)filename, depth);
+			entry = xmlNewCatalogEntry(type, sysid, NULL, NULL,
+				                   XML_CATA_PREFER_NONE, NULL);
+			res = xmlHashAddEntry(catal->sgml, filename, entry);
+			if (res < 0) {
+			    xmlFreeCatalogEntry(entry, NULL);
+			} else {
+			    xmlExpandCatalog(catal,
+					    (const char *)filename, depth);
+			}
 			xmlFree(filename);
 		    }
 		}
