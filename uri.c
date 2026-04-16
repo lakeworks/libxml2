@@ -1704,6 +1704,8 @@ xmlURIEscapeStr(const xmlChar *str, const xmlChar *list) {
     if (str[0] == 0)
 	return(xmlStrdup(str));
     len = xmlStrlen(str);
+    if (len == 0)
+        return(NULL);
 
     len += 20;
     ret = (xmlChar *) xmlMallocAtomic(len);
