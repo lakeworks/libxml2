@@ -1,0 +1,2 @@
+I/O warning : failed to load "http://example.invalid/file.xml": Attempt to load network entity
+I/O error : Attempt to load network entity: http://example.invalid/file.xml
