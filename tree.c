@@ -3406,6 +3406,7 @@ xmlAddChild(xmlNodePtr parent, xmlNodePtr cur) {
     if (parent->type == XML_TEXT_NODE) {
         if (xmlTextAddContent(parent, cur->content, -1) < 0)
             return(NULL);
+        xmlUnlinkNodeInternal(cur);
         xmlFreeNode(cur);
         return(parent);
     }
