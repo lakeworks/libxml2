@@ -487,7 +487,8 @@ xmlParserEntityCheck(xmlParserCtxtPtr ctxt, unsigned long extra)
      * entity sizes to make the size checks reliable. If "sizeentcopy"
      * overflows, we have to abort.
      */
-    if ((*expandedSize > XML_PARSER_ALLOWED_EXPANSION) &&
+    if ((ctxt->maxAmpl > 0) &&
+        (*expandedSize > XML_PARSER_ALLOWED_EXPANSION) &&
         ((*expandedSize >= ULONG_MAX) ||
          (*expandedSize / ctxt->maxAmpl > consumed))) {
         xmlFatalErrMsg(ctxt, XML_ERR_RESOURCE_LIMIT,
@@ -13772,6 +13773,10 @@ xmlCtxtUseOptions(xmlParserCtxtPtr ctxt, int options)
 void
 xmlCtxtSetMaxAmplification(xmlParserCtxtPtr ctxt, unsigned maxAmpl)
 {
+    if (ctxt == NULL)
+        return;
+    if (maxAmpl == 0)
+        return;
     ctxt->maxAmpl = maxAmpl;
 }
 
