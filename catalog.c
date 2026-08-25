@@ -1253,7 +1253,7 @@ xmlParseXMLCatalogNode(xmlNodePtr cur, xmlCatalogPrefer prefer,
 		(prev->prefer == entry->prefer) &&
 		(prev->group == entry->group)) {
 		    if (xmlDebugCatalogs)
-			xmlCatalogPrintDebug(
+			fprintf(stderr,
 			    "Ignoring repeated nextCatalog %s\n", entry->URL);
 		    xmlFreeCatalogEntry(entry, NULL);
 		    entry = NULL;
