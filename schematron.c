@@ -816,6 +816,10 @@ xmlSchematronPushInclude(xmlSchematronParserCtxtPtr ctxt,
     } else if (ctxt->nbIncludes + 2 >= ctxt->maxIncludes) {
         xmlNodePtr *tmp;
 
+        if (ctxt->maxIncludes > INT_MAX / 4) {
+            xmlSchematronPErrMemory(NULL);
+            return;
+        }
         tmp = (xmlNodePtr *)
             xmlRealloc(ctxt->includes, ctxt->maxIncludes * 4 *
                        sizeof(xmlNodePtr));
@@ -884,6 +888,10 @@ xmlSchematronAddNamespace(xmlSchematronParserCtxtPtr ctxt,
     } else if (ctxt->nbNamespaces + 2 >= ctxt->maxNamespaces) {
         const xmlChar **tmp;
 
+        if (ctxt->maxNamespaces > INT_MAX / 4) {
+            xmlSchematronPErrMemory(NULL);
+            return;
+        }
         tmp = (const xmlChar **)
             xmlRealloc((xmlChar **) ctxt->namespaces, ctxt->maxNamespaces * 4 *
                        sizeof(const xmlChar *));
