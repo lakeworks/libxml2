@@ -2424,7 +2424,11 @@ xmlXIncludeProcessTreeFlags(xmlNodePtr tree, int flags) {
  */
 int
 xmlXIncludeProcessTree(xmlNodePtr tree) {
-    return(xmlXIncludeProcessTreeFlags(tree, (tree && tree->doc) ? tree->doc->parseFlags : 0));
+    /* xmlNs has no doc member: check the type before reading tree->doc */
+    if ((tree == NULL) || (tree->type == XML_NAMESPACE_DECL) ||
+        (tree->doc == NULL))
+        return(-1);
+    return(xmlXIncludeProcessTreeFlags(tree, tree->doc->parseFlags));
 }
 
 /**
