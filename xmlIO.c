@@ -2770,6 +2770,13 @@ xmlOutputBufferWriteEscape(xmlOutputBufferPtr out, const xmlChar *str,
             if ((nbchars < MINLEN) && (len <= 0))
                 goto done;
 
+            /* nbchars is the int narrowing of a size_t buffer length */
+            if (xmlBufUse((out->encoder != NULL) ? out->conv : out->buffer) >=
+                INT_MAX) {
+                out->error = XML_ERR_INTERNAL_ERROR;
+                return(-1);
+            }
+
 	    /*
 	     * second write the stuff to the I/O channel
 	     */
